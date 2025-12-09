@@ -4,22 +4,18 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 import java.time.LocalDateTime;
 
 /**
  * Entidade que representa uma avaliação de feedback do sistema.
- * Armazenada em DynamoDB para alta disponibilidade e escalabilidade.
+ * Armazenada em RDS PostgreSQL para garantir consistência transacional.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "avaliacoes")
-@DynamoDbBean
 public class Avaliacao {
 
     @Id
@@ -42,15 +38,6 @@ public class Avaliacao {
     @Column
     private boolean notificacaoEnviada;
 
-    @DynamoDbPartitionKey
-    public String getId() {
-        return id;
-    }
-
-    @DynamoDbSortKey
-    public String getDataEnvioString() {
-        return dataEnvio != null ? dataEnvio.toString() : null;
-    }
 
     /**
      * Calcula a urgência baseada na nota recebida.
